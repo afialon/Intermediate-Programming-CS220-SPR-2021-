@@ -1,5 +1,6 @@
 #include<stdio.h>
 
+
 double convToFarenheit ( double temp )
 {
   return (9.0/5.0) * temp + 32.0;
