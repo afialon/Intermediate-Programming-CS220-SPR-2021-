@@ -12,20 +12,29 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-struct phoneNumberColl {
-  vector<phoneNumber> coll;
-} typedef phoneNumberColl;
-
-struct phoneNumber {
+typedef struct phoneNumber {
   string pn_Type;
   string pn_Number;
-} typedef phoneNumber;
+} phoneNumber;
 
-struct cntName {
+typedef struct phoneNumberColl {
+  vector<phoneNumber> coll;
+} phoneNumberColl;
+
+typedef struct cntName {
   string FName;
   string LName;  
-} typedef cntName;
+} cntName;
 
+string str_to_lower (const string &str) {
+  string str2 = str;
+  for(int i = 0; i < (int)str.length(); i++) {
+    str2[i] = tolower(str[i]);
+  }
+  return str2;
+}
+
+		     
 bool operator<(const cntName &left, const cntName &right) {
   string left_lastname_lc = str_to_lower(left.LName);
   string right_lastname_lc = str_to_lower(right.LName);
@@ -43,6 +52,16 @@ bool operator<(const cntName &left, const cntName &right) {
   if (right_firstname_lc < left_firstname_lc) {
     return false;
   }
+  return false;
+}
+
+bool numIsValid(const string &pNum) {
+  for(int i = 0; i < (int)pNum.length(); i++) {
+    if(pNum[i] != '-' && isdigit(pNum[i]) != true) {
+      return false;
+    }
+  }
+  return true;
 }
 
       
@@ -52,42 +71,40 @@ int main() {
   cout << "Info: Welcome to the Phone Database!" << endl;
   cout << "Info: Please enter a command" << endl;
   char cmnd;
-  cin >> cmnd;
-  while(cmnd != 'Q') {
+  //cin >> cmnd;
+  while(cin >> cmnd && cmnd != 'Q') {
     switch(cmnd) {
-      case 'C':
-	string cFName;
-	string cLName;
+      case 'C': {
+	string cFName = "";
+	string cLName = "";
 	cin >> cFName;
 	cin >> cLName;
-	cntName cContact;
+	cntName cContact = cntName();
 	cContact.FName = cFName;
 	cContact.LName = cLName;
 	//if .find != .end
 	
-	if (phone_db.find(cContact) != phone_db.end) {
+	if (phone_db.find(cContact) != phone_db.end()) {
 	  cout << "Error: Contact already exists" << endl;
 	}
 	else {
-	  phone_db[cContact];
+	  phone_db[cContact] = phoneNumberColl();
 	  cout << "Result: Contact created" << endl;
 	}
-	
+      }
         break;
-      case 'L':
-	for(phone_db::iterator it = phone_db.begin(); it != phone_db.end(); ++it) {
+      case 'L': {
+	for(map<cntName, phoneNumberColl>::iterator it = phone_db.begin(); it != phone_db.end(); ++it) {
 	  cout << (it-> first).LName << "," << (it-> first).FName << endl;
 	}
-        for(size_t i = 0; i < (phone_db[cContact]).coll.size(); i++) {
-            cout << "Result: " << phone_db[cContact].coll[i].pn_Type << "," << phone_db[cContact].coll[i].pn_Number << endl;
-        }
+      }
         break;
-      case 'N':
+    case 'N': {
 	//Declare temp variables and initalize
         string cFName;
         string cLName;
 	string cType;
-	string cNumber
+	string cNumber;
         cin >> cFName;
         cin >> cLName;
 	cin >> cType;
@@ -95,20 +112,21 @@ int main() {
         cntName cContact;
         cContact.FName = cFName;
         cContact.LName = cLName;
-	phoneNumber cNumber;
-	cNumber.pn_Type = cType;
-	cNumber.pn_Number = cNumber;
+	phoneNumber cTotalNum;
+	cTotalNum.pn_Type = cType;
+	cTotalNum.pn_Number = cNumber;
 	//TODO: test to make sure user inputs are correct
-	if(phone_db.find(cContact) != phone_db.end) {
+	if(phone_db.find(cContact) == phone_db.end()) {
           cout << "Error: Contact not found" << endl;
         }
 	else if(cType != "VOIP" && cType != "CELL" && cType != "HOME" && cType != "WORK" && cType != "FAX") {
 	  cout << "Error: Invalid phone number type" << endl;
 	}
-	else if(numIsInvalid(cNumber) == true) {
+	else if(numIsValid(cNumber) == false) {
 	  //TODO: Make invalid
 	  cout << "Error: Not a valid phone number" << endl;
 	}
+	//if((phone_db[cContact]).coll.size() > 0) 
 	else if((phone_db[cContact]).coll.size() > 0) {
 	  int temporaryVal;
 	  for(size_t i = 0; i < (phone_db[cContact]).coll.size(); i++) {
@@ -120,13 +138,18 @@ int main() {
 	    }
 	  }
 	  if((phone_db[cContact].coll[temporaryVal].pn_Type).compare(cType) != 0) {
-	    (phone_db[cContact].coll).push_back[cNumber];
+	    (phone_db[cContact].coll).push_back(cTotalNum);
 	    cout << "Result: Phone number added" << endl;
 	  }
 	  
 	}
+	else {
+	  (phone_db[cContact].coll).push_back(cTotalNum);
+           cout << "Result: Phone number added" << endl;
+	}
+    }
         break;
-      case 'P':
+    case 'P': {
 	//Declare temp variables and initalize
 	string cFName;
         string cLName;
@@ -136,20 +159,20 @@ int main() {
         cContact.FName = cFName;
         cContact.LName = cLName;
 
-	if (phone_db.find(cContact) != phone_db.end) {
+	if (phone_db.find(cContact) == phone_db.end()) {
           cout << "Error: Contact not found" << endl;
         }
-	else if(phone_db.size() == 0) {
-	  cout << "No Phone Numbers have been inputted for this contact" << endl;
+	else if((phone_db[cContact]).coll.size() == 0) {
+	  cout << "Info: No Phone Numbers have been inputted for this contact" << endl;
 	}
         else {
           for(size_t i = 0; i < (phone_db[cContact].coll).size(); i++) {
 	    cout << "Result: " << phone_db[cContact].coll[i].pn_Type << "," << phone_db[cContact].coll[i].pn_Number << endl;
 	  }
         }
-	
+    }
         break;
-      case 'D':
+    case 'D': {
         string cFName;
         string cLName;
         cin >> cFName;
@@ -159,16 +182,16 @@ int main() {
         cContact.LName = cLName;
         //if .find != .end
 
-        if (phone_db.find(cContact) != phone_db.end) {
+        if (phone_db.find(cContact) == phone_db.end()) {
           cout << "Error: Contact not found" << endl;
         }
         else {
-          phone_db.erase[cContact];
+          phone_db.erase(cContact);
           cout << "Result: Contact deleted" << endl;
         }
-	
+    }
         break;
-      case 'X':
+    case 'X': {
 	//Declare temp variables and initalize
         string cFName;
         string cLName;
@@ -180,7 +203,7 @@ int main() {
         cContact.FName = cFName;
         cContact.LName = cLName;
 
-	if(phone_db.find(cContact) != phone_db.end) {
+	if(phone_db.find(cContact) == phone_db.end()) {
           cout << "Error: Contact not found" << endl;
         }
 	else if(cType != "VOIP" && cType != "CELL" && cType != "HOME" && cType != "WORK" && cType != "FAX") {
@@ -202,22 +225,43 @@ int main() {
 	  if((phone_db[cContact].coll[temporaryVal].pn_Type).compare(cType) != 0) {
             cout << "Error: No phone number of that type" << endl;
           }
+	}
+    }
         break;
-      case 'S':
+    case 'S': {
+	std::ofstream ofile("data.txt");
 	
+	for(map<cntName, phoneNumberColl>::iterator it = phone_db.begin(); it != phone_db.end(); ++it) {
+          ofile << (it-> first).LName << "," << (it-> first).FName << endl;
+        }
+	ofile << endl;
+	
+	for(map<cntName, phoneNumberColl>::iterator it = phone_db.begin(); it != phone_db.end(); ++it) {
+	  ofile << (it-> first).LName << "," << (it-> first).FName << endl;
+          
+	  for(vector<phoneNumber>::iterator it2 = (it-> second).coll.begin(); it2 != (it-> second).coll.end(); it2++) {
+	    ofile << it2-> pn_Type << "," << it2-> pn_Number << endl;
+	  }
+        }
+	ofile.close();
+    }
         break;
-      case 'R':
-
-        break;
-      default:
+     case 'R':
+	//read in first and last, switches at comma or end of for
+       istream ifile("data.txt");
+       
+       phone_db[cContact] = phoneNumberColl();
+       break;
+    default: {
 	cout << "Error: Invalid Command" << endl;
+    }
 	break;
 
 
 
     }
     cout << "Info: Please enter a command" << endl;
-    cin >> cmnd;
+    //cin >> cmnd;
   }
   cout << "Info: Thank you for using the Phone Database!" << endl;
   return 0;
