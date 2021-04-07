@@ -234,7 +234,7 @@ int main() {
 	for(map<cntName, phoneNumberColl>::iterator it = phone_db.begin(); it != phone_db.end(); ++it) {
           ofile << (it-> first).LName << "," << (it-> first).FName << endl;
         }
-	ofile << endl;
+	ofile << "THISIS THEEND" << endl;
 	
 	for(map<cntName, phoneNumberColl>::iterator it = phone_db.begin(); it != phone_db.end(); ++it) {
 	  ofile << (it-> first).LName << "," << (it-> first).FName << endl;
@@ -246,16 +246,20 @@ int main() {
 	ofile.close();
     }
         break;
-     case 'R':
+	//case 'R':
 	//read in first and last, switches at comma or end of for
-       istream ifile("data.txt");
-       
-       phone_db[cContact] = phoneNumberColl();
-       break;
+       //istream ifile("data.txt");
+       //string cFName;
+       //string cLName;
+       //cin >> cFName;
+       //cin >> cLName;
+       //while(
+       //phone_db[cContact] = phoneNumberColl();
+       //break;
     default: {
 	cout << "Error: Invalid Command" << endl;
-    }
 	break;
+    }
 
 
 
