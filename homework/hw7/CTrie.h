@@ -20,7 +20,7 @@ public:
    */
   //TODO: Create Deep Copy
   CTrie(const CTrie& rhs): isWord(rhs.isWord), letter(rhs.letter), edgeMap(rhs.edgeMap) { };
-
+  
   /**
    * Destructor.
    */
@@ -60,16 +60,16 @@ public:
    */
   CTrie& operator+=(const std::string& word) {
     char cLetter = word[0];
-    edgeMap[cLetter]+= 
-      std::string cWord = word;
-      
-      this +=(word*);
+    if(word.size() == 0) {
+      this-> isWord = true;
+    }
+    else if(edgeMap.find(cLetter) == edgeMap.end()) {
+      edgeMap[cLetter] = CTrie(word);
     }
     else {
-      //Create nodes for the rest of the word's letters
-    }    for(map<char, CTrie*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
-      if((it->first) = 
+      this +=(word + 1);
     }
+    return this;
   };
 
   /**
@@ -78,7 +78,16 @@ public:
    * \return true if the word is a member of the trie, false otherwise
    */
   bool operator^(const std::string &word) const {
-    
+    char cLetter = word[0];
+    if(word.size() == 0) {
+      return true;
+    }
+    else if(edgeMap.find(cLetter) == edgeMap.end()) {
+      return false;
+    }
+    else {
+      return this ^(word + 1);
+    }
   };
 
   /**
@@ -87,7 +96,13 @@ public:
    * \return true if the other object represents exactly the same set of words,
    *         false otherwise
    */
-  bool operator==(const CTrie& rhs) const;
+  bool operator==(const CTrie& rhs) const {
+    for(map<char, CTrie>::iterator it = phone_db.begin(); it != phone_db.end(); ++it) {
+      //iterate through the map, compare every node in this map, also looking for extra nodes
+      //run a quick test to make sure size is equal
+      //
+    }
+  };
 
   /**
    * \brief Overloaded output stream operator<< to print the CTrie in 
@@ -106,12 +121,19 @@ public:
   /**
    * \return the number of children
    */
-  unsigned numChildren() const ;
+  unsigned numChildren() const {
+    return edgeMap.size();
+  };
 
   /**
    * \return true if there are any children, false otherwise
    */
-  bool hasChild() const;
+  bool hasChild() const {
+    if(edgeMap.empty()) {
+      return false;
+    }
+    return true;
+  };
 
   /**
    * Check whether a child linked by a specific character exists.
@@ -119,7 +141,12 @@ public:
    * \return true if there is a link to a child labeled with the character,
    *         false otherwise
    */
-  bool hasChild(char character) const;
+  bool hasChild(char character) const {
+    if(edgeMap.find(character) != edgeMap.end()) {
+      return true;
+    }
+    return false;
+  };
 
   /**
    * Get pointer to child node reachable via link labeled with
@@ -127,12 +154,21 @@ public:
    * \param character a character
    * \return pointer to child node, or nullptr if there is no such child
    */
-  const CTrie* getChild(char character) const;
+  const CTrie* getChild(char character) const {
+    if(edgeMap.find(character) != edgeMap.end()) {
+      return nullptr;
+    }
+    else {
+      return edgeMap[character];
+    }
+  };
 
   /**
    * \return true if this node is an endpoint, false otherwise
    */
-  bool isEndpoint() const; 
+  bool isEndpoint() const {
+    return isWord;
+  }; 
 
 private:
   // TODO: fields
@@ -144,6 +180,32 @@ private:
   
   
   // TODO: helper functions
+  /**
+  * \return true if this node is an endpoint, false otherwise
+  */
+  //is the edgemap call correct
+  CTrie(const char character): isWord(false), char(character), edgeMap(std::map<char, CTrie*> edgeMap) { } ;
+
+  CTrie(const char character, const bool boolean): isWord(boolean), char(character), edgeMap(std::map<char, CTrie*> edgeMap) { } ;
+  
+  CTrie(const string& word):  {
+    if(word.empty()) {
+      return null;
+    }
+    else if((word.size() / std::string.size()) == 1) {
+      return CTrie(word[0], true);
+    }
+    else {
+      //Create a new node for the first letter
+      char cLetter = word[0];
+      CTrie cCTrie = CTrie(cLetter);
+      //is this a natural construction
+      cCTrie.edgeMap[word[1]] = CTrie(word + 1)*;
+      //Recursively call for the rest of the word
+      return CTrie;
+    }
+     
+  };
 };
 
 #endif // CTRIE_H
