@@ -53,16 +53,77 @@ bool operator^(const std::string &word) const {
 }
 
 bool operator==(const CTrie& rhs) const {
-  for(map<char, CTrie>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+  if(edgeMap.hasChild() && rhs.hasChild()) {
+    for(map<char, CTrie>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+      if(rhs[(it->first] == rhs.end() {
+	 return false;
+      }
+	  //can I call straight up size or do I have to specify
+      else if(rhs.size() != edgeMap.size()) {
+	return false;
+      }
+      else {
+	return (it->second)==(rhs->second);
+      }
+    }
+  }
+  else if(!(edgeMap.hasChild()) && !(rhs.hasChild())) {
+    delete this;
+    //how can I make this function end?
+    return true;
+  }
+  else {
+    return false;
+  }
       //iterate through the map, compare every node in this map,
-    if(edgeMap
       //also looking for extra codes
     //run a quick test to make sure size is equal
-    //
+} 
+
+friend std::ostream& operator<<(std::ostream& os, const CTrie& ct) {
+  string s = "";
+  output_trie(os, s, ct);
+
+}
+
+string output_trie(std::ostream& os, std::string s, const CTrie& ct){
+  if(ct.isEndpoint()) {
+    std::cout << s;
+    return s;
+  }
+  for(map<char, CTrie>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+    s.push_back((this->first));
+    output_trie(os, s, (this->second));
   }
 }
 
-friend std::ostream& operator<<(std::ostream& os, const CTrie& ct) {
-
-
+unsigned numChildren() const {
+    return edgeMap.size();
 }
+ 
+bool hasChild() const {
+  if(edgeMap.empty()) {
+    return false;
+  }
+  return true;
+}
+ 
+bool hasChild(char character) const {
+  if(edgeMap.find(character) != edgeMap.end()) {
+    return true;
+  }
+  return false;
+}
+
+const CTrie* getChild(char character) const {
+  if(edgeMap.find(character) != edgeMap.end()) {
+    return edgeMap[character];
+  }
+  else {
+    return nullptr;
+  }
+}
+
+bool isEndpoint() const {
+  return isWord;
+};
