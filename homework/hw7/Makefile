@@ -4,3 +4,5 @@ wordHunt: wordHuntMain.o CTrie.o WordHunt.o
 	$(CXX) -o wordHunt wordHuntMain.o CTrie.o WordHunt.o
 cTrieTest: CTrieTest.o CTrie.o
 	$(CXX) -o cTrieTest CTrieTest.o CTrie.o
+tTrieTest: TTrieTest.o TTrie.o
+	$(CXX) -o tTrieTest TTrieTest.o TTrie.o

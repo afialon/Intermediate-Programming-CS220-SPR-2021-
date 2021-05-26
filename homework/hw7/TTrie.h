@@ -7,14 +7,18 @@
 #include <sstream>
 #include <map>
 
-template< typename DataType>
+template<typename DataType>
 class TTrie {
 public:
   /**
    * Default Constructor.
    */
-  TTrie();
+  TTrie(): isTerminal(false), sequence() { edgeMap = std::map<DataType, TTrie*>();};
 
+  TTrie(const DataType sequenceData): isTerminal(false), sequence(sequenceData) { edgeMap = std::map<DataType, TTrie<DataType>*>(); }
+
+  TTrie(const DataType sequenceData, const bool boolean): isTerminal(boolean), sequence(sequenceData) { edgeMap = std::map<DataType, TTrie<DataType>*>(); }
+  
   /**
    * Copy Constructor.
    * \param rhs A const reference to the input to copy.
@@ -25,18 +29,18 @@ public:
    * Destructor.
    */
   ~TTrie();
-
+  
   /**
    * Assignment operator.
    */
-  TTrie& operator=(const TTrie<DataType> &rhs);
+  TTrie<DataType>& operator=(const TTrie<DataType> &rhs);
 
   /**
    * Overloaded addition/assignment operator to input a new vector into the TTrie.
    * \param sequence is the vector to insert into the trie
    * \return a reference to the TTrie object
    */
-  TTrie& operator+=(const std::vector<DataType>& sequence);
+  TTrie<DataType>& operator+=(const std::vector<DataType>& sequence);
 
   /**
    * Overloaded carat operator to check whether a given sequence exists in the object.
@@ -64,7 +68,7 @@ public:
    * \param tt A constant reference to the input TTrie object
    * \return A reference to the output stream object
   */
-  template< typename U>
+  template <typename U>
   friend std::ostream& operator<<(std::ostream& os, const TTrie<U>& tt);
 
   /**
@@ -100,8 +104,12 @@ public:
 
 private:
   // TODO: fields
-
+  bool isTerminal;
+  DataType sequence;
+  std::map<DataType, TTrie*> edgeMap;
   // TODO: helper functions
+
+  void output_trie(std::string s,  std::vector<std::string>& v, const TTrie<DataType>& tt);
 };
 
 #include "TTrie.inc"

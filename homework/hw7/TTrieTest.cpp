@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 
+using namespace std;
 using std::cout;
 using std::endl;
 
