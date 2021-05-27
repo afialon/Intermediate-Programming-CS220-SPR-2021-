@@ -8,14 +8,18 @@
 #include "CTrie.h"
 #include <algorithm>
 
+
 using std::map;
 
 // TODO: implement the CTrie member functions and friend functions
 CTrie& CTrie::operator=(const CTrie &rhs) {
-   for(map<char, CTrie*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+  for(map<char, CTrie*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+    if (it-> second) {
      delete (it-> second);
+     }
    }
    edgeMap.clear();
+  
    //TODO: Ask TA about correct form
    isWord = rhs.isWord;
    letter = rhs.letter;
@@ -35,12 +39,14 @@ CTrie& CTrie::operator+=(const std::string& word) {
     
   if (!child) {
     CTrie* n = new CTrie(c);
-    edgeMap[c] = n;
+    edgeMap[c] = new CTrie(c);
+    delete n;
   }
 
   if(word.size() > 1) {
     *edgeMap[c] += word.substr(1);
   }
+  delete child;
   return *this;
 }
 

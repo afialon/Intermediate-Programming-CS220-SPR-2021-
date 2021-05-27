@@ -44,11 +44,12 @@ public:
   ~CTrie() {
 
     for(std::map<char, CTrie*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
-      delete (it-> second);
-    }
-
+      if((it-> second)) {
+	delete (it-> second);
+      }
+    }    
     edgeMap.clear();
-   };
+  };
 
   /**
    * Assignment operator.

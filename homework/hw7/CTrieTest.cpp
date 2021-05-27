@@ -64,8 +64,9 @@ struct CTrieTest {
   static void AddAssignOperatorTest() {
     CTrie q = CTrie();
     ASSERT(!q.hasChild('h'));
-    
+    ASSERT("Before +=");
     q += "h";
+    ASSERT("AFter +=");
     ASSERT(!q.isEndpoint());
     ASSERT(q.hasChild('h'));
 
@@ -73,10 +74,16 @@ struct CTrieTest {
     ASSERT(hChild != nullptr);
     ASSERT(!hChild->hasChild('i'));
     q += "hi";
+    ASSERT("AFter += hi");
+
     ASSERT(hChild->hasChild('i'));
+    ASSERT("End Of Fucntion");
+    delete hChild;
+    ASSERT("Deleted q");
   }
 
   static void CopyConstructorTest() {
+    ASSERT("Started CopyConstTest");
     CTrie q = CTrie();
     q += "hello";
     q += "hell";
@@ -186,8 +193,9 @@ int main(int, char* argv[]) {
   sigaction(SIGSEGV, &signalAction, NULL);
 
   CTrieTest::DefaultConstructorTest();
-
+  std::cout << "Add Assignment" << std::endl;
   CTrieTest::AddAssignOperatorTest();
+  std::cout << "StartingCCConst" << std::endl;
   CTrieTest::CopyConstructorTest();
   CTrieTest::AssignmentOperatorTest();
   CTrieTest::CaratOperatorTest();

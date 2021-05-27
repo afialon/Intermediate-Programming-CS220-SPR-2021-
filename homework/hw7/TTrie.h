@@ -23,7 +23,10 @@ public:
    * Copy Constructor.
    * \param rhs A const reference to the input to copy.
    */
-  TTrie(const TTrie& rhs);
+  TTrie(const TTrie& rhs) {
+    edgeMap = std::map<DataType, TTrie<DataType>*>();
+    *this = rhs;
+  };
 
   /**
    * Destructor.
@@ -102,6 +105,8 @@ public:
    */
   bool isEndpoint() const; 
 
+  template <typename U>
+  friend void output_trie(std::string s,  std::vector<std::string>& v, const TTrie<U>& tt);
 private:
   // TODO: fields
   bool isTerminal;
@@ -109,9 +114,8 @@ private:
   std::map<DataType, TTrie*> edgeMap;
   // TODO: helper functions
 
-  void output_trie(std::string s,  std::vector<std::string>& v, const TTrie<DataType>& tt);
+  //void output_trie(std::string s,  std::vector<std::string>& v, TTrie<DataType> &tt);
 };
 
 #include "TTrie.inc"
-
 #endif // TTRIE_H

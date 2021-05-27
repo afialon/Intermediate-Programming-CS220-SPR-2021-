@@ -71,15 +71,18 @@ struct TTrieTest {
     CTrie q = CTrie();
     ASSERT(!q.hasChild('h'));
     std::vector<char> h({'h'});
-
+    
     q += h;
     ASSERT(q.hasChild('h'));
-
+    
     const CTrie *hChild = q.getChild('h');
     ASSERT(hChild != nullptr);
-    ASSERT(!hChild->hasChild('i'));
+    ASSERT(!hChild->hasChild('i')); //seg fault here
+    ASSERT("Before hi init");
     std::vector<char> hi({'h', 'i'});
+    ASSERT("After hi init");
     q += hi;
+    ASSERT("After +=");
     ASSERT(hChild->hasChild('i'));
 
     STrie r = STrie();
