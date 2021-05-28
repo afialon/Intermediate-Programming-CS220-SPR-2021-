@@ -45,10 +45,23 @@ int match(const char *regex, const char *word, int restriction) {
       regexWoChars --;
     }
   }
-  if(strlen(*regex) != strlen(*word)) {
-    return 0;
+  char endOfRegex [(regexWoChars + 1)];
+  int k = 0;
+  int j = 0;
+  while(k < strlen(*regex)) {
+    endOfRegex[j] = *regex[k];
+    j = j + 1;
+    k = k + 1;
+    if(*regex[i] == '~' || *regex[i] == '*' || *regex[i] == '?') {
+      endOfRegex[]  
+    }
   }
-  
+  for(int i = 0; i < strlen(*regex); i++) {
+    endOfRegex 
+    if(strlen(*regex) != strlen(*word)) {
+      return 0;
+    }
+  }
   //check for tilde
   int a = 1;
   if (*regex == '~') {
@@ -98,12 +111,12 @@ int matchesEnd (const char *regex, const char *word) {
   int j = strlen(word - 1);
   while(regex[i] != '~') {
     if(regex[i] != strlen[j]) {
-      return 1;
+      return 0;
     }
     else {
       i--;
       j--;
     }
   }
-  return 0;
+  return 1;
 }
