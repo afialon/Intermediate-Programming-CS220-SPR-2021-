@@ -24,19 +24,31 @@ TTrie<DataType>::~TTrie() {
 }
 
 template<typename DataType>
+TTrie<DataType>::TTrie(const TTrie& rhs) {
+  isTerminal = rhs.isTerminal;
+  sequence = rhs.sequence;
+  for(typename map<DataType, TTrie<DataType>*>::const_iterator it = (rhs.edgeMap).cbegin(); it != (rhs.edgeMap).cend(); ++it) {
+    DataType key = (it->first);
+    TTrie<DataType>* value = (it->second);
+    edgeMap[key] = new TTrie(*value);
+  }
+}
+
+template<typename DataType>
 TTrie<DataType>& TTrie<DataType>::operator=(const TTrie<DataType> &rhs) {
    for(typename map<DataType, TTrie<DataType>*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
      delete (it-> second);
    }
+   
    edgeMap.clear();
+   
    //TODO: Ask TA about correct form
    isTerminal = rhs.isTerminal;
    sequence = rhs.sequence;
    for(typename map<DataType, TTrie<DataType>*>::const_iterator it = (rhs.edgeMap).cbegin(); it != (rhs.edgeMap).cend(); ++it) {
      DataType key = (it->first);
      TTrie<DataType>* value = (it->second);
-     edgeMap[key] = value;
-     delete value;
+     edgeMap[key] = new TTrie(*value);
    }
    return *this;
 }
@@ -53,7 +65,6 @@ TTrie<DataType>& TTrie<DataType>::operator+=(const std::vector<DataType>& sequen
   if (!child) {
     TTrie<DataType>* n = new TTrie<DataType>(c);
     edgeMap[c] = n;
-    delete n;
   }
 
   if(sequence.size() > 1) {
@@ -63,7 +74,6 @@ TTrie<DataType>& TTrie<DataType>::operator+=(const std::vector<DataType>& sequen
     v.assign(it, sequence.cend());
     *edgeMap[c] += v;
   }
-  delete child;
   return *this;
 }
 
@@ -72,16 +82,13 @@ bool TTrie<DataType>::operator^(const std::vector<DataType> &sequence) const {
   const TTrie<DataType>* child = getChild(sequence[0]);
   if (!child) {
     return false;
-    delete child;
   }
   else {
     if (sequence.size() == 1) {
-      delete child;
       return true;
     }
     else {
       typename std::vector<DataType> v;
-      
       typename std::vector<DataType>::const_iterator it;
       it = sequence.cbegin() + 1;
       v.assign(it, sequence.cend());
@@ -101,7 +108,6 @@ bool TTrie<DataType>::operator==(const TTrie<DataType>& rhs) const {
     else {
       return *(it->second)== *rhs.getChild(it->first);
     }
-
   }
   return true;
     //iterate through the map, compare every node in this map,
@@ -111,7 +117,7 @@ bool TTrie<DataType>::operator==(const TTrie<DataType>& rhs) const {
 
 template<typename DataType>
 void output_trie(std::string s,  std::vector<std::string>& v, const TTrie<DataType>& tt){
-     if(tt.isEndpoint()) {
+  if(tt.isEndpoint()) {
     s += tt.sequence;
     v.push_back(s);
   }
@@ -120,7 +126,7 @@ void output_trie(std::string s,  std::vector<std::string>& v, const TTrie<DataTy
       output_trie(s, v, *(it->second));
     }
   }
-  //char c = 97;
+  
   //while(c <= 122) {
   //  if(tt.hasChild(c)) {
   //    s.push_back(c);
@@ -157,7 +163,7 @@ bool TTrie<DataType>::hasChild() const {
 
 template<typename DataType>
 bool TTrie<DataType>::hasChild(const DataType &character) const {
-  if(edgeMap.find(character) != edgeMap.end()) {
+  if(edgeMap.find(character) != edgeMap.cend()) {
     return true;
   }
   return false;

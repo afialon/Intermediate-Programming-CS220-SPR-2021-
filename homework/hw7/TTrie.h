@@ -23,10 +23,7 @@ public:
    * Copy Constructor.
    * \param rhs A const reference to the input to copy.
    */
-  TTrie(const TTrie& rhs) {
-    edgeMap = std::map<DataType, TTrie<DataType>*>();
-    *this = rhs;
-  };
+  TTrie(const TTrie& rhs);
 
   /**
    * Destructor.
