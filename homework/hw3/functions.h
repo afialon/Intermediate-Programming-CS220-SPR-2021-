@@ -1,3 +1,7 @@
+//Alex Fialon
+//afialon1
+
+
 #ifndef __FUNCTIONS_H__
 #define __FUNCTIONS_H__
 
@@ -20,6 +24,14 @@ int read_file(FILE *fp, char words[][MAX_WORD_SIZE + 1], int size);
  * @return 1 if it is a match, else 0 if it's not a match.
  */
 int match(const char *regex, const char *word, int restriction);
+
+/** Match function to check whether the end of regex matches the end of the word.
+ * @param regex, is a null terminated char array of the regex
+ * @param word is the null terminated char array of word to match to
+ * @return 1 if it is a match, else 0 if it's not a match.
+ */
+
+int matchesEnd (const char *regex, const char *word) {
 
 // Feel free to add more helper functions! Make sure they are well commented.
 // If you do change the match function, note that it is called by the functions
