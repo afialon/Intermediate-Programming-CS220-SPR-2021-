@@ -100,18 +100,19 @@ public:
   /**
    * \return true if this node is an endpoint, false otherwise
    */
-  bool isEndpoint() const; 
+  bool isEndpoint() const;
+
+  DataType getSequence() const;
 
   template <typename U>
-  friend void output_trie(std::string s,  std::vector<std::string>& v, const TTrie<U>& tt);
+  friend void output_trie(std::vector<U>& s,  std::vector<std::vector<U>>& v, const TTrie<U>& tt);
+
 private:
   // TODO: fields
   bool isTerminal;
   DataType sequence;
   std::map<DataType, TTrie*> edgeMap;
   // TODO: helper functions
-
-  //void output_trie(std::string s,  std::vector<std::string>& v, TTrie<DataType> &tt);
 };
 
 #include "TTrie.inc"

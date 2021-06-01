@@ -56,6 +56,7 @@ TTrie<DataType>& TTrie<DataType>::operator=(const TTrie<DataType> &rhs) {
 template<typename DataType>
 TTrie<DataType>& TTrie<DataType>::operator+=(const std::vector<DataType>& sequence) {
   if(sequence.empty()) {
+//    this->isTerminal = true;
     return *this;
   }
   
@@ -74,39 +75,56 @@ TTrie<DataType>& TTrie<DataType>::operator+=(const std::vector<DataType>& sequen
     v.assign(it, sequence.cend());
     *edgeMap[c] += v;
   }
+  else {
+    edgeMap[c]->isTerminal = true; 
+  }
   return *this;
 }
 
 template<typename DataType>
 bool TTrie<DataType>::operator^(const std::vector<DataType> &sequence) const {
   const TTrie<DataType>* child = getChild(sequence[0]);
-  if (!child) {
+  if (child == nullptr) {
     return false;
   }
+  
   else {
     if (sequence.size() == 1) {
-      return true;
+      return child->isEndpoint();
     }
     else {
       typename std::vector<DataType> v;
       typename std::vector<DataType>::const_iterator it;
       it = sequence.cbegin() + 1;
       v.assign(it, sequence.cend());
-      return *child ^ v;
+      if((*child ^ v) == false) {
+        return false;
+      } else {
+      	 return true;
+	 }
     }
   }
+  
+  return false;
 }
   
 template<typename DataType>
 bool TTrie<DataType>::operator==(const TTrie<DataType>& rhs) const {
-  TTrie<DataType> copiedTTrie = TTrie<DataType>(rhs);
-
+  //TTrie<DataType> copiedTTrie = TTrie<DataType>(rhs);
+  if(rhs.numChildren() != edgeMap.size()) {
+    return false;
+  }
+  if(rhs.isEndpoint() != this->isEndpoint()) {
+    return false;
+  }
   for(typename map<DataType, TTrie<DataType>*>::const_iterator it = edgeMap.cbegin(); it != edgeMap.cend(); ++it) {
-    if(!rhs.hasChild(it->first)) {
+    if(!(rhs.hasChild(it->first))) {
       return false;//janky?
     }
     else {
-      return *(it->second)== *rhs.getChild(it->first);
+      if((*(it->second)== *rhs.getChild(it->first)) == false) {
+        return false;
+      }
     }
   }
   return true;
@@ -116,38 +134,39 @@ bool TTrie<DataType>::operator==(const TTrie<DataType>& rhs) const {
 }
 
 template<typename DataType>
-void output_trie(std::string s,  std::vector<std::string>& v, const TTrie<DataType>& tt){
+void output_trie(std::vector<DataType>& s,  std::vector<std::vector<DataType>>& v, const TTrie<DataType>& tt){
   if(tt.isEndpoint()) {
-    s += tt.sequence;
+    //s.push_back(tt.getSequence());
+    //std::string t = tt.getSequence();
     v.push_back(s);
   }
   if(tt.hasChild()) {
     for(typename map<DataType, TTrie<DataType>*>::const_iterator it = tt.edgeMap.cbegin(); it != tt.edgeMap.cend(); ++it) {
+      s.push_back(it->first);
       output_trie(s, v, *(it->second));
+      s.pop_back();
     }
   }
-  
-  //while(c <= 122) {
-  //  if(tt.hasChild(c)) {
-  //    s.push_back(c);
-  //    output_trie(s, v, *tt.getChild(c));
-  //  }
-  // c++;
-  //}
 }
 
 template<typename DataType>
 std::ostream& operator<<(std::ostream& os, const TTrie<DataType>& tt) {
-  std::string s;
-  std::vector<std::string> returnString;
+  typename std::vector<DataType> s;
+  typename std::vector<std::vector<DataType>> returnString;
   output_trie(s, returnString, tt); //would this update returnstring
   std::sort(returnString.begin(), returnString.end());
 
   //for(std::vector<std::string>::iterator it = returnString.begin(); it != returnString.end(); ++it) {
-  for(std::string s : returnString) {
-    os << s << "-";
+  for(std::vector<DataType> x : returnString) {
+    //for(DataType r : x) {
+    for(size_t i = 0; i < x.size(); ++i) {
+      os << x[i];
+      if (i < x.size() - 1) {
+      os << '-';
+      }
+    }
+    os << '\n';
   }
-  os << std::endl;
   return os;
 }
 
@@ -172,7 +191,7 @@ bool TTrie<DataType>::hasChild(const DataType &character) const {
 template<typename DataType>
 const TTrie<DataType>* TTrie<DataType>::getChild(const DataType &character) const {
   //typename std::map<char, TTrie<DataType>*>::const_iterator temp = typename edgeMap.find(character);
-  if (edgeMap.find(character) != edgeMap.end()) {
+  if (edgeMap.find(character) != edgeMap.cend()) {
     return (edgeMap.at(character));
   }
   else {
@@ -183,7 +202,12 @@ const TTrie<DataType>* TTrie<DataType>::getChild(const DataType &character) cons
 template<class DataType>
 bool TTrie<DataType>::isEndpoint() const {
   return isTerminal;
-} 
- 
+}
+
+template<class DataType>
+DataType TTrie<DataType>::getSequence() const {
+  return sequence;
+}
+
 template class TTrie<int>;
 template class TTrie<char>;

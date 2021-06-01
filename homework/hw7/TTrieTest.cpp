@@ -480,8 +480,9 @@ struct TTrieTest {
 
     std::stringstream ss;
     ss << q;
+    std::cout << ss.str() << std::endl;
     ASSERT(ss.str() == "h-e-l-l\nh-e-l-l-o\nh-e-l-p\nj-o-a-n-n-a\nj-o-h-n-s\nj-o-h-n-s-o-n\n");
-
+    
     ITrie it1;
     std::vector<int> iseq1({8, 6, 7, 5, 3, 0, 9});
     std::vector<int> iseq2({8, 6, 7, 101});
