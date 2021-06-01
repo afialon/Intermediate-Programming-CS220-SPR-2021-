@@ -8,10 +8,29 @@
 #include "CTrie.h"
 #include <algorithm>
 
-
 using std::map;
 
 // TODO: implement the CTrie member functions and friend functions
+
+
+CTrie::~CTrie() {
+
+  for(std::map<char, CTrie*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+    delete (it-> second);
+  }
+  edgeMap.clear();
+}
+
+CTrie::CTrie(const CTrie& rhs) {
+  isWord = rhs.isWord;
+  letter = rhs.letter;
+  for(map<char, CTrie*>::const_iterator it = (rhs.edgeMap).cbegin(); it != (rhs.edgeMap).cend(); ++it) {
+    char key = (it->first);
+    CTrie* value = (it->second);
+    edgeMap[key] = new CTrie(*value);
+  }
+}
+
 CTrie& CTrie::operator=(const CTrie &rhs) {
   for(map<char, CTrie*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
     if (it-> second) {
@@ -26,77 +45,81 @@ CTrie& CTrie::operator=(const CTrie &rhs) {
    for(map<char, CTrie*>::const_iterator it = (rhs.edgeMap).cbegin(); it != (rhs.edgeMap).cend(); ++it) {
      char key = (it->first);
      CTrie* value = (it->second);
-     edgeMap[key] = value;
+     edgeMap[key] = new CTrie(*value);
    }
-
    return *this;
-
 }
 
 CTrie& CTrie::operator+=(const std::string& word) {
+
+  if(word.empty()) {
+    return *this;
+  }
   const char c = word[0];
   const CTrie* child = getChild(c);
     
   if (!child) {
     CTrie* n = new CTrie(c);
-    edgeMap[c] = new CTrie(c);
-    delete n;
+    edgeMap[c] = n;
   }
 
   if(word.size() > 1) {
-    *edgeMap[c] += word.substr(1);
+    //recursively pass the word without the first letter
+    std::string w = word.substr(1);
+    *edgeMap[c] += w;
   }
-  delete child;
+  else {
+    edgeMap[c]->isWord = true;
+  }
   return *this;
 }
 
 bool CTrie::operator^(const std::string &word) const {
   const CTrie* child = getChild(word[0]);
-  if (!child) {
+  if (child == nullptr) {
     return false;
   }
   else {
     if (word.size() == 1) {
-      return true;
+      return child->isEndpoint();
     }
     else {
-      return *child ^ word.substr(1);
+      std::string w = word.substr(1);
+      return *child ^ w;
     }
   }
 }
 
 bool CTrie::operator==(const CTrie& rhs) const {
-  CTrie copiedCTrie = CTrie(rhs);
-  
+  if(rhs.numChildren() != edgeMap.size()) {
+    return false;
+  }
+  if(rhs.isEndpoint() != this->isEndpoint()) {
+    return false;
+  }
   for(map<char, CTrie*>::const_iterator it = edgeMap.cbegin(); it != edgeMap.cend(); ++it) {
-    if(!rhs.hasChild(it->first)) {
+    if(!(rhs.hasChild(it->first))) {
       return false;//janky?
     }
     else {
-      return *(it->second)== *rhs.getChild(it->first);
+      if((*(it->second)== *rhs.getChild(it->first)) == false) {
+        return false;
+      }
     }
-    
   }
   return true;
-      //iterate through the map, compare every node in this map,
-      //also looking for extra codes
+    //iterate through the map, compare every node in this map,
+    //also looking for extra codes
     //run a quick test to make sure size is equal
 }
 
 void output_trie(std::string s,  std::vector<std::string>& v, const CTrie& ct){
-  if(ct.isEndpoint()) {
+  if(ct.isEndpoint()) {    
+    //s.push_back(ct.getLetter());//can access in ttrie but not here?
     v.push_back(s);
   }
-  if(!(ct.hasChild())) {
-    return;
-  }
-  char c = 97;
-  while(c <= 122) {
-    if(ct.hasChild(c)) {
-      s.push_back(c);
-      output_trie(s, v, *ct.getChild(c));
-    }
-    c++;
+  for(map<char, CTrie*>::const_iterator it = ct.edgeMap.cbegin(); it != ct.edgeMap.cend(); ++it) {//dont have access to the map here
+    output_trie(s + it->first, v, *(it->second));
   }
 }
 
@@ -109,9 +132,9 @@ std::ostream& operator<<(std::ostream& os, const CTrie& ct) {
 
   //for(std::vector<std::string>::iterator it = returnString.begin(); it != returnString.end(); ++it) {
   for(std::string s : returnString) {
-    os << s << " ";
+    os << s << '\n';
   }
-  os << std::endl;
+
   return os;
 }
 
@@ -120,28 +143,20 @@ unsigned int CTrie::numChildren() const {
 }
  
 bool CTrie::hasChild() const {
-  if(edgeMap.empty()) {
-    return false;
-  }
-  return true;
+  return edgeMap.size() != 0;
 }
  
 bool CTrie::hasChild(char character) const {
-  if(edgeMap.find(character) != edgeMap.end()) {
+  if(edgeMap.find(character) != edgeMap.cend()) {
     return true;
   }
   return false;
 }
 
 const CTrie* CTrie::getChild(char character) const {
-  std::map<char, CTrie*>::const_iterator temp = edgeMap.find(character);
-  if (temp != edgeMap.end()) {
-    return (temp->second);
+  if (edgeMap.find(character) != edgeMap.cend()) {
+    return (edgeMap.at(character));
   }
-  //if(edgeMap.find(character) != edgeMap.end()) {
-  //const CTrie* temp = edgeMap[character];
-  //return temp;
-  //}
   else {
     return nullptr;
   }
@@ -151,28 +166,6 @@ bool CTrie::isEndpoint() const {
   return isWord;
 }
 
-CTrie* CTrie::createWord (const std::string word) const {
-  std::cout << "creating word for word: " << word << std::endl;
-    if(word.empty()) {
-      CTrie cCTrie = CTrie();
-      CTrie* nCTrie = &cCTrie;
-      return nCTrie;
-    }
-    else if(word.length() == 1) {
-      CTrie cCTrie = CTrie(word[0], true);
-      CTrie* nCTrie = &cCTrie;
-      return nCTrie;
-    }
-    else {
-      //Create a new node for the first letter
-      char cLetter = word[0];
-      CTrie cCTrie = CTrie(cLetter);
-      //is this a natural construction
-      //initially word + 1
-      CTrie* nCTrie = createWord(word.substr(1));
-      cCTrie.edgeMap[word[1]] = nCTrie;
-      //Recursively call for the rest of the word
-      CTrie* pCTrie = &cCTrie;
-      return pCTrie;
-    }
-  }
+char CTrie::getLetter() const {
+  return letter;
+}

@@ -78,7 +78,6 @@ struct CTrieTest {
 
     ASSERT(hChild->hasChild('i'));
     ASSERT("End Of Fucntion");
-    delete hChild;
     ASSERT("Deleted q");
   }
 
@@ -178,6 +177,7 @@ struct CTrieTest {
 
     std::stringstream ss;
     ss << q;
+    std::cout << ss.str() << std::endl;
     ASSERT(ss.str() == "hell\nhello\nhelp\njoanna\njohns\njohnson\n");
   }
 };

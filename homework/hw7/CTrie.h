@@ -15,25 +15,18 @@ public:
    * Default Constructor.
    */
   //What do i put in here for map
-  CTrie(): isWord(false), letter('-') { edgeMap = std::map<char, CTrie*>(); }
+  CTrie(): isWord(false), letter() { edgeMap = std::map<char, CTrie*>(); }
 
   /**
    * Copy Constructor.
    * \param rhs A const reference to the input to copy.
    */
   //TODO: Create Deep Copy
-  CTrie(const CTrie& rhs): isWord(false), letter(' ')  {
-    edgeMap = std::map<char, CTrie*>();
-    *this = rhs;
-  }
+  CTrie(const CTrie& rhs);
 
   CTrie(const char character): isWord(false), letter(character) { edgeMap = std::map<char, CTrie*>(); }
 
   CTrie(const char character, const bool boolean): isWord(boolean), letter(character) { edgeMap = std::map<char, CTrie*>(); }
-
-  //CTrie(string& word) {
-    
-    //isWord}
   
   
   /**
@@ -41,15 +34,7 @@ public:
    */
   //recursively deletes all of objects children then o
   //iterates through the map, deletes all children, deletes map, then other parameters
-  ~CTrie() {
-
-    for(std::map<char, CTrie*>::iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
-      if((it-> second)) {
-	delete (it-> second);
-      }
-    }    
-    edgeMap.clear();
-  };
+  ~CTrie();
 
   /**
    * Assignment operator.
@@ -121,13 +106,9 @@ public:
    */
   bool isEndpoint() const; 
 
-  /**
-   *
-   *
-   *
-   */
-  CTrie* createWord (const string word) const;
+  char getLetter() const;
 
+  friend void output_trie(std::string s,  std::vector<std::string>& v, const CTrie& ct);
 private:
   // TODO: fields
   //is true if the word is complete, and is false if not
