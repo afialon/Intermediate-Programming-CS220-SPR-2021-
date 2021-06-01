@@ -9,3 +9,5 @@ TTrieTest.o: TTrieTest.cpp TTrie.h TTrie.inc
 tTrieTest: TTrieTest.o
 	$(CXX) -o tTrieTest TTrieTest.o
 
+clean:
+	rm -f *.o wordHunt cTrieTest tTrieTest *~
