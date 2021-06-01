@@ -1,0 +1,3 @@
+Alex Fialon afialon1
+
+My Program is structured pretty similarly to how it was initially defined in the assigment details. For the << operator, I created a helper function called output trie that outputs a vector of all of the contents of the current trie so that << can easily print it out. Something I did that was particularly clever was using a for each loop to iterate when I didn't need to use a std iterator. I got stuck on some recursion, and that took me a while to figure it out. I needed to have a check before I could return some cases.
