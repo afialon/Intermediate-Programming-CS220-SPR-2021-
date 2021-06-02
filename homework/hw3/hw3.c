@@ -49,4 +49,25 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
+  //regex string implementation and reading
+  char regexString[129];
+  int count = 0;
+
+  //iterate while there are regex strings
+  while (scanf(" %s", regexString) == 1) {
+    for (int i = 0; i < MAX_WORD_SIZE; i++) {
+      //use match to iterate through the regex string
+      if (match(regexString, words[i], tilde_restrict) == 0) {
+        count++;
+        printf("%s\n", words[i]);
+      }
+    }
+  }
+
+  if (count == 0) {
+    printf("No match found for regex '%s'\n", regexString);
+  }
+
+  return 0;
+
 }
